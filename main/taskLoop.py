@@ -54,7 +54,7 @@ def  prepareCodeFile(userCode):
 
 def prepare_data(code,start,end):
     print code
-    read_path='../Astock_1/'+code+'.csv'
+    read_path='/data/Astock_1/'+code+'.csv'
     write_path='./temp.csv'
     df=pd.read_csv(read_path,index_col=0)
     df.sort_index(axis=0,  ascending=True)

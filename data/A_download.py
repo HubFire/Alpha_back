@@ -31,11 +31,11 @@ import time
 def writeStockBasic():
     df = ts.get_stock_basics()
     df=df.sort_index(ascending=True)
-    df.to_csv("../basics.csv")
+    df.to_csv("/data/basics.csv")
 
 #获得上市时间    
 def getTimeToMarket(code):
-    df = pd.read_csv('../basics.csv',sep=',',dtype={'code':'object'})
+    df = pd.read_csv('/data/basics.csv',sep=',',dtype={'code':'object'})
     df = df.set_index('code')
     time1=df.ix[code]['timeToMarket']
     time1=str(time1)
@@ -58,7 +58,7 @@ def dateadd(date_str,n):
 
 
 def  update_one(code):
-     f=open('../Astock/'+code+'.csv','r')
+     f=open('/data/Astock/'+code+'.csv','r')
      data=f.readlines()
      t=data[-1].split(',')
      f.close()
@@ -69,13 +69,13 @@ def  update_one(code):
         end=b
         data=ts.get_h_data(code,start=start, end=end)
         data=data.sort_index(ascending=True)
-        data.to_csv('../Astock/'+code+'.csv',mode='a',header=False)
+        data.to_csv('/data/Astock/'+code+'.csv',mode='a',header=False)
         
 
 
 #获得单只股票的数据并写入文件，时间降序    
 def get_stock(code):
-    filename = '../Astock/'+code+'.csv'
+    filename = '/data/Astock/'+code+'.csv'
     if os.path.exists(filename):
         update_one(code)
         print code+' updated'
@@ -91,7 +91,7 @@ def get_stock(code):
 
 def get_all_stock():
     
-    df = pd.read_csv('../basics.csv',sep=',',dtype={'code':'object'})
+    df = pd.read_csv('/data/basics.csv',sep=',',dtype={'code':'object'})
     df = df.set_index('code')
     for code in df.index:
         try:
