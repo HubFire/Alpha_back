@@ -18,14 +18,10 @@ from pyalgotrade.technical import linreg
 from pyalgotrade.technical import stats
 
 
-args=[14,5]
+args=[5]
 def initialize(self):
-
-    self.__rsi = rsi.RSI(self.feed[self.instrument].getCloseDataSeries(),self.args[0])
-    self.__sma = ma.SMA(self.__rsi, self.args[1])
-
-
-
+    self.__sma = ma.SMA(self.feed[self.instrument].getCloseDataSeries(), self.args[0])
+    
 def onBars(self, bars):
 
     sma= self.__sma[-1]
@@ -34,16 +30,34 @@ def onBars(self, bars):
 
     price = bars[self.instrument].getClose()
     shares=self.getBroker().getShares(self.instrument)
-
+    
     if price > 1.01*sma:
         self.marketOrder(self.instrument,shares*-1)
         self.info('SELL %i'%shares)
-    if price < 0.9*sma:
+    if price < 0.99*sma:
         sharesToBuy=int(self.getBroker().getCash()/price)
         self.marketOrder(self.instrument, sharesToBuy)
-        self.info('BUY %d'%shares)
+        self.info('BUY %d'%sharesToBuy)
 
                     
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 
                 
                 

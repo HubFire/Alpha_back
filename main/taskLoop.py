@@ -1,9 +1,11 @@
 #-*- coding: utf-8 -*-
+from _curses import error
+
 from  dbutils import DbConn
 import time
 import main
 import pandas as pd
-
+import sys
 def  getTasks():
     db=DbConn()
     conn=db.cursor()
@@ -66,6 +68,21 @@ def prepare_data(code,start,end):
     df = df[df.index<=str(end)]
     df.to_csv(write_path)
 
+def saveComplieError(task_id,error):
+
+    error_message=error[0]
+    error_lineno=error[1][1]-20
+    error_str="'there is error in line {0}\n,error message:{1}'".format(error_lineno,error_message)
+
+    db = DbConn()
+    conn = db.cursor()
+    sql = 'insert into testQuant_complieerror set task_id={0} ,error_content={1},error_code=1'.format(
+        task_id,error_str)
+    print sql
+    conn.execute(sql)
+    db.commit()
+    db.close()
+
 
 def  doTask(task):
       task_id =task[0]
@@ -78,16 +95,15 @@ def  doTask(task):
       t=task_parameter.split(',')
       print task_stra_id
       userCode=getUserCode(task_stra_id)
-      print userCode
+      #print userCode
 
       prepareCodeFile(userCode)
       prepare_data(t[0],t[1],t[2])
 
-      #try:
-      main.run(t, task_id)
-
-      #except Exception, e:
-      #print e
+      try:
+        main.run(t, task_id)
+      except Exception as e:
+          saveComplieError(task_id,e)
       updateTaskStatus(task_id,1)
 
 def  mainloop():
@@ -99,7 +115,6 @@ def  mainloop():
          print 'empty'
          continue
      for row in rows:
-        print row
         doTask(row)
 mainloop()
 
