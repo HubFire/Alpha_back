@@ -72,7 +72,7 @@ def saveComplieError(task_id,error):
 
     error_message=error[0]
     error_lineno=error[1][1]-20
-    error_str="'there is error in line {0}\n,error message:{1}'".format(error_lineno,error_message)
+    error_str="'there is error in line {0} <br> error message:{1}'".format(error_lineno,error_message)
 
     db = DbConn()
     conn = db.cursor()
@@ -101,9 +101,15 @@ def  doTask(task):
       prepare_data(t[0],t[1],t[2])
 
       try:
+        # to be   running status
+        updateTaskStatus(task_id, 3)
         main.run(t, task_id)
       except Exception as e:
           saveComplieError(task_id,e)
+          # the task status is error
+          updateTaskStatus(task_id, 2)
+          return
+      # the task is succesful
       updateTaskStatus(task_id,1)
 
 def  mainloop():
